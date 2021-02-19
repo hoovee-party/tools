@@ -3,6 +3,7 @@
 
 name: Node.js CI
 
+
 on:
   push:
     branches: [ main ]
@@ -10,6 +11,7 @@ on:
     branches: [ main ]
 
 jobs:
+  environment: production
   build:
 
     runs-on: ubuntu-latest
