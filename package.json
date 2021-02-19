@@ -1,0 +1,24 @@
+{
+  "name": "@hoovee.party/tools",
+  "version": "1.0.0",
+  "main": "build/index.js",
+  "repository": "git@github.com:hoovee-party/tools.git",
+  "author": "Valentin <valentin@valentin.consulting>",
+  "license": "MIT",
+  "description": "Simple IOC container",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "watch": "tsc --watch",
+    "build": "tsc",
+    "test": "mocha ./build/**.test.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^8.2.1",
+    "chai": "^4.3.0",
+    "mocha": "^8.3.0",
+    "typescript": "^4.1.5"
+  },
+  "dependencies": {
+    "@types/chai": "^4.2.15"
+  }
+}
