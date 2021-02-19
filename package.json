@@ -13,12 +13,11 @@
     "test": "mocha ./build/**.test.js"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.15",
     "@types/mocha": "^8.2.1",
     "chai": "^4.3.0",
     "mocha": "^8.3.0",
     "typescript": "^4.1.5"
   },
-  "dependencies": {
-    "@types/chai": "^4.2.15"
-  }
+  "dependencies": {}
 }
