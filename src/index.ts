@@ -1,6 +1,6 @@
 export interface ToolsServices {}
 
-type Tools<TServices extends {}> = {
+export type Tools<TServices extends {}> = {
   service: <TName extends keyof TServices>(
     name: TName,
     getter: (services: TServices) => TServices[TName]

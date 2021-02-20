@@ -1,11 +1,14 @@
-import tools from "./tools";
+import { Tools } from "../src";
+import tools, { Services } from "./tools";
 
 type Configuration = {
+  port: number;
   host: string;
 };
 
 const configuration: Configuration = {
-  host: "https://www.hoovee.party",
+  port: 3000,
+  host: "0.0.0.0",
 };
 
 declare module "./tools" {
@@ -14,4 +17,6 @@ declare module "./tools" {
   }
 }
 
-tools.service("configuration", () => configuration);
+export default (tools: Tools<Services>) => {
+  tools.service("configuration", () => configuration);
+};

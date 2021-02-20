@@ -4,44 +4,89 @@ Simple strongly-typed IOC container
 
 ## Usage
 
-First, create a container in a file available from all other. This container may not require any of your dependencies. It will made dependencies available wherever needed in the codebase.
+Create a container in a file available from all other. This container may not require any of your dependencies. It will made dependencies available wherever needed in the codebase.
 
-    // src/tools.ts
-    import createTools from "@hoovee.party/tools"
-    interface Services = {}
-    const tools = createTools<Services>() ;
-    export default tools ;
+```javascript
+import createTools from "@hoovee.party/tools"
+interface Services = {}
+const tools = createTools<Services>() ;
+export default tools ;
+```
 
-To inject a service (exemple here with configuration)
+Create services and export provider functions
 
-    import tools from "./tools";
+```javascript
+// configruration.ts
 
-    // Create the service
-    type Configuration = {
-      host: string;
-    };
+import { Tools } from "../src";
+import { Services } from "./tools";
 
-    const configuration: Configuration = {
-      host: "https://www.hoovee.party",
-    };
+type Configuration = {
+  port: number;
+  host: string;
+};
 
-    // Declare to typescript using merging
-    declare module "./tools" {
-      interface Services {
-        configuration: Configuration;
-      }
-    }
+const configuration: Configuration = {
+  port: 3000,
+  host: "0.0.0.0",
+};
 
-    // Provide it
-    tools.service("configuration", () => configuration);
+declare module "./tools" {
+  interface Services {
+    configuration: Configuration;
+  }
+}
 
-To consume a service (exemple here with data layer)
+export default (tools: Tools<Services>) => {
+  tools.service("configuration", () => configuration);
+};
 
-    import tools from "./tools";
+```
 
-    function getData() {
-      const host = tools.configuration.host;
-      /* Cutsom logic with host, like fetch(host) */
-    }
+```javascript
+// Server.ts (using configuration)
+import { Tools } from "../src";
+import tools, { Services } from "./tools";
 
-    export default getData;
+class Server {
+  port: number;
+  host: string;
+
+  constructor() {
+    this.port = tools.configuration.port;
+    this.host = tools.configuration.host;
+  }
+
+  start() {
+    http.createServer(function (req, res) {
+      res.write('Hello World!');
+      res.end();
+    }).listen(this.port);
+  }
+}
+
+declare module "./tools" {
+  interface Services {
+    server: Server;
+  }
+}
+
+export default (tools: Tools<Services>) => {
+  tools.service("server", () => new Server());
+};
+
+```
+
+Inject deps usign providers
+
+```javascript
+import tools from "./tools";
+import configuration from "./configuration";
+import Server from "./Server";
+
+export default function start() {
+  configuration(tools);
+  Server(tools);
+  tools.server.start();
+}
+```
