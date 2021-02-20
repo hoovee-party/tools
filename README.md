@@ -6,87 +6,56 @@ Simple strongly-typed IOC container
 
 Create a container in a file available from all other. This container may not require any of your dependencies. It will made dependencies available wherever needed in the codebase.
 
-```javascript
-import createTools from "@hoovee.party/tools"
-interface Services = {}
-const tools = createTools<Services>() ;
-export default tools ;
+```ts
+// example/container.ts
+
+import createTools, { Container } from "../src/index";
+export interface Services {}
+export type ServicesContainer = Container<Services>;
+const tools: ServicesContainer = createTools<Services>();
+export default tools;
 ```
 
-Create services and export provider functions
+Register services. Make sure to `start` services provided asynchronously.
 
-```javascript
-// configruration.ts
+```ts
+// example/index.ts
 
-import { Tools } from "../src";
-import { Services } from "./tools";
+import container from "./container";
+import ConfigurationProvider from "./services/Configuration/provider";
+import RemoteConfigurationProvider from "./services/RemoteConfiguration/provider";
+import ServerProvider from "./services/Server/provider";
 
-type Configuration = {
-  port: number;
-  host: string;
-};
+export default async function start() {
+  ConfigurationProvider(container);
+  RemoteConfigurationProvider(container);
+  ServerProvider(container);
 
-const configuration: Configuration = {
-  port: 3000,
-  host: "0.0.0.0",
-};
+  await container.start("remoteConfiguration");
 
-declare module "./tools" {
+  container.server.start();
+}
+```
+
+Use declaration merging to make TS aware of injected services
+
+```ts
+// example/services/Configuration/provider.ts
+
+import createConfiguration, { Configuration } from ".";
+import { ServicesContainer } from "../../container";
+
+declare module "../../container" {
   interface Services {
     configuration: Configuration;
   }
 }
 
-export default (tools: Tools<Services>) => {
-  tools.service("configuration", () => configuration);
+export default (container: ServicesContainer) => {
+  container.service("configuration", () => createConfiguration());
 };
-
 ```
 
-```javascript
-// Server.ts (using configuration)
-import { Tools } from "../src";
-import tools, { Services } from "./tools";
+## Examples
 
-class Server {
-  port: number;
-  host: string;
-
-  constructor() {
-    this.port = tools.configuration.port;
-    this.host = tools.configuration.host;
-  }
-
-  start() {
-    http.createServer(function (req, res) {
-      res.write('Hello World!');
-      res.end();
-    }).listen(this.port);
-  }
-}
-
-declare module "./tools" {
-  interface Services {
-    server: Server;
-  }
-}
-
-export default (tools: Tools<Services>) => {
-  tools.service("server", () => new Server());
-};
-
-```
-
-Inject deps usign providers
-
-```javascript
-import tools from "./tools";
-import configuration from "./configuration";
-import Server from "./Server";
-
-export default function start() {
-  configuration(tools);
-  Server(tools);
-  tools.server.start();
-}
-```
+Full example in [example folder](../blob/master/example)
