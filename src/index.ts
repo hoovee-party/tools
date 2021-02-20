@@ -1,5 +1,3 @@
-export interface ToolsServices {}
-
 export type Tools<TServices extends {}> = {
   service: <TName extends keyof TServices>(
     name: TName,
@@ -29,5 +27,14 @@ export default function createTools<TServices extends {}>() {
     },
   } as Tools<TServices>;
 
-  return tools;
+  const proxy = new Proxy(tools, {
+    get: (target: Tools<TServices>, prop: keyof typeof target) => {
+      const service = target[prop];
+      if (!service)
+        throw new Error(`Service ${prop} has not been provided yet`);
+      else return service;
+    },
+  });
+
+  return proxy;
 }

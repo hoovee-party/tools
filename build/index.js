@@ -18,7 +18,16 @@ function createTools() {
             });
         },
     };
-    return tools;
+    const proxy = new Proxy(tools, {
+        get: (target, prop) => {
+            const service = target[prop];
+            if (!service)
+                throw new Error(`Service ${prop} has not been provided yet`);
+            else
+                return service;
+        },
+    });
+    return proxy;
 }
 exports.default = createTools;
 //# sourceMappingURL=index.js.map

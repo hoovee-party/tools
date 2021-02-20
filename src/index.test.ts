@@ -36,4 +36,15 @@ describe("Tools module", () => {
     // Assert
     expect(welcome("Kevin")).to.equal("Bonjour Kevin !");
   });
+
+  it("When deps is not provided, should thorw an error", () => {
+    type Deps = {
+      configuration: { welcoming: string };
+    };
+    // Arrange
+    const tools = createTools<Deps>();
+    // Act
+    // Assert
+    expect(() => tools.configuration).to.throw();
+  });
 });

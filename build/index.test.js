@@ -29,5 +29,12 @@ describe("Tools module", () => {
         // Assert
         chai_1.expect(welcome("Kevin")).to.equal("Bonjour Kevin !");
     });
+    it("When deps is not provided, should thorw an error", () => {
+        // Arrange
+        const tools = index_1.default();
+        // Act
+        // Assert
+        chai_1.expect(() => tools.configuration).to.throw();
+    });
 });
 //# sourceMappingURL=index.test.js.map

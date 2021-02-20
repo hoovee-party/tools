@@ -1,5 +1,5 @@
 import { Tools } from "../src";
-import tools, { Services } from "./tools";
+import { Services } from "./tools";
 
 type Configuration = {
   port: number;
