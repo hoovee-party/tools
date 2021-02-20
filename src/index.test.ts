@@ -37,7 +37,7 @@ describe("Tools module", () => {
     expect(welcome("Kevin")).to.equal("Bonjour Kevin !");
   });
 
-  it("When deps is not provided, should thorw an error", () => {
+  it("When deps is not provided, should throw an error", () => {
     type Deps = {
       configuration: { welcoming: string };
     };
@@ -46,5 +46,42 @@ describe("Tools module", () => {
     // Act
     // Assert
     expect(() => tools.configuration).to.throw();
+  });
+
+  it("When deps is async, should throw if service has not been started before being used", async () => {
+    // Arrange
+    type Deps = {
+      configuration: { host: string };
+    };
+
+    // Act
+    const tools = createTools<Deps>();
+    tools.service("configuration", () => {
+      return new Promise<{ host: string }>((resolve) => {
+        setTimeout(() => resolve({ host: "https://www.hoovee.party" }), 300);
+      });
+    });
+
+    // Assert
+    expect(() => tools.configuration).to.throw();
+  });
+
+  it("When deps is async, should made it availble after async start", async () => {
+    // Arrange
+    type Deps = {
+      configuration: { host: string };
+    };
+    const tools = createTools<Deps>();
+
+    // Act
+    tools.service("configuration", () => {
+      return new Promise<{ host: string }>((resolve) => {
+        setTimeout(() => resolve({ host: "https://www.hoovee.party" }), 300);
+      });
+    });
+    await tools.start("configuration");
+
+    // Assert
+    expect(tools.configuration.host).to.equal("https://www.hoovee.party");
   });
 });

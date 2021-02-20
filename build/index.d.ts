@@ -1,4 +1,5 @@
-export declare type Tools<TServices extends {}> = {
-    service: <TName extends keyof TServices>(name: TName, getter: (services: TServices) => TServices[TName]) => void;
+export declare type Container<TServices extends {}> = {
+    service: <TName extends keyof TServices>(name: TName, getter: (services: Container<TServices>) => TServices[TName] | Promise<TServices[TName]>) => void;
+    start: <TName extends keyof TServices>(name: TName) => Promise<void>;
 } & TServices;
-export default function createTools<TServices extends {}>(): Tools<TServices>;
+export default function createContainer<TServices extends {}>(): Container<TServices>;
