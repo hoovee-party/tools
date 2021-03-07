@@ -1,4 +1,4 @@
-import createTools from "./index";
+import createContainer from "./index";
 import { expect } from "chai";
 
 describe("Tools module", () => {
@@ -8,9 +8,9 @@ describe("Tools module", () => {
     };
 
     // Arrange
-    const tools = createTools<Deps>();
+    const tools = createContainer<Deps>();
     // Act
-    tools.service("configuration", () => ({
+    tools.register("configuration", () => ({
       host: "https://www.hoovee.party",
     }));
     const configuration = tools.configuration;
@@ -24,12 +24,12 @@ describe("Tools module", () => {
       welcome: (name: string) => void;
     };
     // Arrange
-    const tools = createTools<Deps>();
+    const tools = createContainer<Deps>();
     // Act
-    tools.service("configuration", () => ({
+    tools.register("configuration", () => ({
       welcoming: "Bonjour",
     }));
-    tools.service("welcome", () => (name) =>
+    tools.register("welcome", () => (name) =>
       `${tools.configuration.welcoming} ${name} !`
     );
     const welcome = tools.welcome;
@@ -42,7 +42,7 @@ describe("Tools module", () => {
       configuration: { welcoming: string };
     };
     // Arrange
-    const tools = createTools<Deps>();
+    const tools = createContainer<Deps>();
     // Act
     // Assert
     expect(() => tools.configuration).to.throw();
@@ -55,8 +55,8 @@ describe("Tools module", () => {
     };
 
     // Act
-    const tools = createTools<Deps>();
-    tools.service("configuration", () => {
+    const tools = createContainer<Deps>();
+    tools.register("configuration", () => {
       return new Promise<{ host: string }>((resolve) => {
         setTimeout(() => resolve({ host: "https://www.hoovee.party" }), 300);
       });
@@ -71,10 +71,10 @@ describe("Tools module", () => {
     type Deps = {
       configuration: { host: string };
     };
-    const tools = createTools<Deps>();
+    const tools = createContainer<Deps>();
 
     // Act
-    tools.service("configuration", () => {
+    tools.register("configuration", () => {
       return new Promise<{ host: string }>((resolve) => {
         setTimeout(() => resolve({ host: "https://www.hoovee.party" }), 300);
       });

@@ -58,4 +58,4 @@ export default (container: ServicesContainer) => {
 
 ## Examples
 
-Full example in [example folder](../blob/master/example)
+Full example in [example folder](../HEAD/example)

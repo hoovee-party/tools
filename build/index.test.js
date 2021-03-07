@@ -19,7 +19,7 @@ describe("Tools module", () => {
         // Arrange
         const tools = index_1.default();
         // Act
-        tools.service("configuration", () => ({
+        tools.register("configuration", () => ({
             host: "https://www.hoovee.party",
         }));
         const configuration = tools.configuration;
@@ -30,10 +30,10 @@ describe("Tools module", () => {
         // Arrange
         const tools = index_1.default();
         // Act
-        tools.service("configuration", () => ({
+        tools.register("configuration", () => ({
             welcoming: "Bonjour",
         }));
-        tools.service("welcome", () => (name) => `${tools.configuration.welcoming} ${name} !`);
+        tools.register("welcome", () => (name) => `${tools.configuration.welcoming} ${name} !`);
         const welcome = tools.welcome;
         // Assert
         chai_1.expect(welcome("Kevin")).to.equal("Bonjour Kevin !");
@@ -48,7 +48,7 @@ describe("Tools module", () => {
     it("When deps is async, should throw if service has not been started before being used", () => __awaiter(void 0, void 0, void 0, function* () {
         // Act
         const tools = index_1.default();
-        tools.service("configuration", () => {
+        tools.register("configuration", () => {
             return new Promise((resolve) => {
                 setTimeout(() => resolve({ host: "https://www.hoovee.party" }), 300);
             });
@@ -59,7 +59,7 @@ describe("Tools module", () => {
     it("When deps is async, should made it availble after async start", () => __awaiter(void 0, void 0, void 0, function* () {
         const tools = index_1.default();
         // Act
-        tools.service("configuration", () => {
+        tools.register("configuration", () => {
             return new Promise((resolve) => {
                 setTimeout(() => resolve({ host: "https://www.hoovee.party" }), 300);
             });
